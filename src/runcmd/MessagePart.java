@@ -208,7 +208,10 @@ public class MessagePart {
      * @param daysToKeep 保留最近多少天内的文件，超过此天数的文件将被删除
      * @return 删除的文件数量
      */
-    public static int cleanOldReqFiles(int daysToKeep) {
+public static int cleanOldReqFiles(int daysToKeep) {
+        if (daysToKeep < 0) {
+            return 0;
+        }
         int deleted = 0;
         try {
             File dir = new File(workdir);
