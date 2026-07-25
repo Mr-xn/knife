@@ -340,6 +340,10 @@ public class ConfigEntry {
                 valueStr = findAndReplace(valueStr, "{" + config.getKey() + "}", config.getValue());
             }
         }
+
+        // 处理动态函数，如 {rand_ip(private,2)}
+        valueStr = DynamicFunctions.process(valueStr);
+
         return valueStr;
     }
 

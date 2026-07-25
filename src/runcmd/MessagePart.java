@@ -191,11 +191,69 @@ public class MessagePart {
 
             File requestFile = new File(workdir, filename);
             FileUtils.writeStringToFile(requestFile, content, "UTF-8");
+
+            // 自动清理超过7天的 .req 文件，避免长期占用磁盘空间
+            cleanOldReqFiles(7);
+
             return requestFile.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace(BurpExtender.getStderr());
             return null;
         }
+    }
+
+    /**
+     * 清理 ~/.knife 目录下超过指定天数的 .req 文件。
+     *
+     * @param daysToKeep 保留最近多少天内的文件，超过此天数的文件将被删除
+     * @return 删除的文件数量
+     */
+    public static int cleanOldReqFiles(int daysToKeep) {
+        int deleted = 0;
+        try {
+            File dir = new File(workdir);
+            if (!dir.exists() || !dir.isDirectory()) {
+                return 0;
+            }
+            long cutoffTime = System.currentTimeMillis() - (long) daysToKeep * 24 * 60 * 60 * 1000;
+            File[] reqFiles = dir.listFiles((d, name) -> name.endsWith(".req"));
+            if (reqFiles == null) return 0;
+            for (File file : reqFiles) {
+                if (file.lastModified() < cutoffTime) {
+                    if (file.delete()) {
+                        deleted++;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(BurpExtender.getStderr());
+        }
+        return deleted;
+    }
+
+    /**
+     * 清理 ~/.knife 目录下所有的 .req 文件。
+     *
+     * @return 删除的文件数量
+     */
+    public static int cleanAllReqFiles() {
+        int deleted = 0;
+        try {
+            File dir = new File(workdir);
+            if (!dir.exists() || !dir.isDirectory()) {
+                return 0;
+            }
+            File[] reqFiles = dir.listFiles((d, name) -> name.endsWith(".req"));
+            if (reqFiles == null) return 0;
+            for (File file : reqFiles) {
+                if (file.delete()) {
+                    deleted++;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(BurpExtender.getStderr());
+        }
+        return deleted;
     }
 
     public MessagePart() {

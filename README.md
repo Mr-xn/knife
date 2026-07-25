@@ -312,6 +312,37 @@ https://aiqicha.baidu.com/index/getCPlaceAjax
 
 ![image-20211230181047699](README.assets/image-20211230181047699.png)
 
+#### 3、动态变量函数（Dynamic Variable Functions）
+
+在header的value中，除了支持 `{Host}`、`{dnslogserver}` 等静态变量外，还支持内置**动态函数**，每次请求时都会实时生成新的值。
+
+##### rand_ip() — 生成随机IP地址
+
+语法：`{rand_ip(类型, 数量)}`
+
+| 参数     | 说明                                                       |
+| -------- | ---------------------------------------------------------- |
+| 类型     | `private`（内网地址）/ `public`（外网地址）/ 留空（完全随机） |
+| 数量     | 可选，默认为 1，最多 20，生成多个时以 `, ` 分隔           |
+
+示例：
+
+```
+# 生成一个完全随机IP（默认）
+X-Forwarded-For: {rand_ip()}
+
+# 生成一个内网IP
+X-Forwarded-For: {rand_ip(private)}
+
+# 生成两个内网IP，如：192.168.1.5, 10.0.0.23
+X-Forwarded-For: {rand_ip(private,2)}
+
+# 生成三个外网IP
+X-Forwarded-For: {rand_ip(public,3)}
+```
+
+在配置中，可以将 X-Forwarded-For 等绕过IP限制的请求头的 Value 设置为 `{rand_ip(private,2)}` 或 `{rand_ip(public)}`，从而每次请求自动使用随机IP值，无需手动修改。
+
 ### 四、由Base URL控制范围的请求包自动修改
 
 执行的修改操和以上相同，不同的是控制范围的方式。当使用set cookie功能后，会自动添加响应的规则，当然也可以手动添加。
@@ -371,6 +402,15 @@ Add 新增一个配置项；Delete删除一个配置项；
 ### 5、配置缓存 SaveToBurp
 
 将当前配置保存到burp的缓存中，下次启动burp时会自动加载。默认是会自动保存的。
+
+### 6、清理请求文件（Clean Req Files）
+
+使用"Run Cmd"功能时，插件会将请求包保存为 `.req` 文件（存放在 `~/.knife/` 目录下）以便传递给 sqlmap 等外部工具。长时间使用后，该目录下的 `.req` 文件会不断累积，占用大量磁盘空间。
+
+为此，插件提供了两种清理方式：
+
+- **自动清理**：每次生成新的 `.req` 文件时，会自动删除超过 **7天** 的旧文件。
+- **手动清理**：在插件配置界面点击 **"Clean Req Files"** 按钮，可一键删除 `~/.knife/` 目录下的所有 `.req` 文件。
 
 ## 欢迎贡献
 

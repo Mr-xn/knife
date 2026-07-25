@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 
 import burp.BurpExtender;
 import burp.IBurpExtenderCallbacks;
+import runcmd.MessagePart;
 
 public class GUI extends JFrame {
 
@@ -415,6 +416,21 @@ public class GUI extends JFrame {
 			}
 		});
 		panel_1.add(RestoreButton);
+
+		JButton cleanReqButton = new JButton("Clean Req Files");
+		cleanReqButton.setToolTipText("Delete all .req files in ~/.knife/ to free disk space");
+		cleanReqButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int user_input = JOptionPane.showConfirmDialog(null,
+						"Delete all .req files in ~/.knife/ directory?",
+						"Clean Req Files", JOptionPane.YES_NO_OPTION);
+				if (JOptionPane.YES_OPTION == user_input) {
+					int count = MessagePart.cleanAllReqFiles();
+					JOptionPane.showMessageDialog(null, "Deleted " + count + " .req file(s).", "Clean Req Files", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+		panel_1.add(cleanReqButton);
 
 		JButton testButton = new JButton("test");
 		testButton.setToolTipText("test");
