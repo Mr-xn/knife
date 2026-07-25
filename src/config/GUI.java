@@ -417,16 +417,17 @@ public class GUI extends JFrame {
 		});
 		panel_1.add(RestoreButton);
 
+		String reqDir = System.getProperty("user.home") + File.separator + ".knife" + File.separator;
 		JButton cleanReqButton = new JButton("Clean Req Files");
-		cleanReqButton.setToolTipText("Delete all .req files in ~/.knife/ to free disk space");
+		cleanReqButton.setToolTipText("Delete all .req files in " + reqDir + " to free disk space");
 		cleanReqButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int user_input = JOptionPane.showConfirmDialog(null,
-						"Delete all .req files in ~/.knife/ directory?",
+						"Delete all .req files in " + reqDir + " ?",
 						"Clean Req Files", JOptionPane.YES_NO_OPTION);
 				if (JOptionPane.YES_OPTION == user_input) {
 					int count = MessagePart.cleanAllReqFiles();
-					JOptionPane.showMessageDialog(null, "Deleted " + count + " .req file(s).", "Clean Req Files", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Deleted " + count + " .req file(s) from " + reqDir, "Clean Req Files", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
