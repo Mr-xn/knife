@@ -29,8 +29,12 @@ public class DynamicFunctions {
      * @param value 包含动态函数占位符的字符串
      * @return 替换后的字符串
      */
-    public static String process(String value) {
-        if (value == null || !value.contains("{rand_ip(")) {
+public static String process(String value) {
+        if (value == null) {
+            return null;
+        }
+        // quick pre-check (case-insensitive) before running regex
+        if (!value.toLowerCase().contains("{rand_ip(")) {
             return value;
         }
         Matcher m = RAND_IP_PATTERN.matcher(value);
