@@ -150,6 +150,9 @@ public static String process(String value) {
             if (a == 127) return true;                           // 127.0.0.0/8 loopback
             if (a == 169 && b == 254) return true;               // 169.254.0.0/16 link-local
             if (a == 100 && b >= 64 && b <= 127) return true;   // 100.64.0.0/10 shared address
+            if (a == 192 && b == 0 && Integer.parseInt(parts[2]) == 2) return true;    // 192.0.2.0/24 TEST-NET-1
+            if (a == 198 && b == 51 && Integer.parseInt(parts[2]) == 100) return true; // 198.51.100.0/24 TEST-NET-2
+            if (a == 203 && b == 0 && Integer.parseInt(parts[2]) == 113) return true;  // 203.0.113.0/24 TEST-NET-3
         } catch (NumberFormatException e) {
             return true;
         }
